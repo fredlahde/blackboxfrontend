@@ -1,5 +1,5 @@
 import p5 from "p5"
-import {renderPlayground, revealBeam} from "blackboxjs_backend"
+import {renderPlayground, revealBeam, getAtoms} from "blackboxjs_backend"
 
 const ARR_LEN = 10;
 const BOX_LEN = 100;
@@ -9,7 +9,9 @@ const COLORS = {
     0: 0xff,
     1: '#aa0033',
     2: '#bbaaff',
-    3: '#00ff00'
+    3: '#00ff00',
+    4: '#0000ff',
+    5: '#f442d9'
 }
 
 function c2idx(c) {
@@ -67,24 +69,57 @@ const sketch = function( p ) {
     p.mouseReleased = function() {
         let mx = c2idx(p.mouseX);
         let my = c2idx(p.mouseY);
+        console.table({mx: mx, my: my});
         // clicked on edge
         if (playground_edges[mx][my] == 1) {
             if (mx == 0) {
-                mx = 1;
+                mx = 0;
             }
             if (mx == 9) {
                 mx = 7;
             }
             if (my == 0) {
-                my = 1;
+                my = 0;
             }
             if (my == 9) {
                 my = 7;
             }
+            
             revealBeam(mx,my);
             const rays = renderPlayground();
             rays.forEach(ray => {
-                playground[ray.startX +2 ][ray.startY] = 3;
+                console.log({x: ray.startX, y:ray.startY});
+                if (ray.startX == 0) {
+                    ray.startX = 0;
+                }
+                if (ray.startX == 7) {
+                    ray.startX = 9;
+                }
+                if (ray.startY == 0) {
+                    ray.startY = 0;
+                }
+                if (ray.startY == 7) {
+                    ray.startY = 9;
+                }
+                playground[ray.startX][ray.startY] = 3;
+                if (ray.finalX == 0) {
+                    ray.finalX = 0;
+                }
+                if (ray.finalX == 7) {
+                    ray.finalX = 9;
+                }
+                if (ray.finalY == 0) {
+                    ray.finalY = 0;
+                }
+                if (ray.finalY == 7) {
+                    ray.finalY = 9;
+                }
+                playground[ray.finalX][ray.finalY] = 4;
+            });
+            const atoms = getAtoms();
+            console.log(atoms);
+            atoms.forEach(atom => {
+                playground[atom.x+ 1][atom.y +1 ] = 5;
             });
             console.log(rays);
             return;
