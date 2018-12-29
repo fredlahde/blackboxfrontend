@@ -72,56 +72,64 @@ const sketch = function( p ) {
         console.table({mx: mx, my: my});
         // clicked on edge
         if (playground_edges[mx][my] == 1) {
-            if (mx == 0) {
-                mx = 0;
+            let bmx = mx;
+            let bmy = my;
+            if (bmx == 0) {
+                bmx = 0;
             }
-            if (mx == 9) {
-                mx = 7;
+            if (bmx > 7) {
+                bmx = 7;
+                bmy--;
             }
-            if (my == 0) {
-                my = 0;
+            if (bmy == 0) {
+                bmy = 0;
             }
-            if (my == 9) {
-                my = 7;
+            if (bmy > 7) {
+                bmy = 7;
+                bmx--;
             }
             
-            revealBeam(mx,my);
+            revealBeam(bmx,bmy);
             const rays = renderPlayground();
             rays.forEach(ray => {
-                console.log({x: ray.startX, y:ray.startY});
-                if (ray.startX == 0) {
-                    ray.startX = 0;
+                console.log("ray", ray);
+                let b_ray = {startX: ray.startX, startY: ray.startY, finalX: ray.finalX, finalY: ray.finalY};
+                console.log("b_raystart: ",{x: b_ray.startX, y:b_ray.startY});
+                if (b_ray.startX == 0) {
+                    b_ray.startX = 0;
                 }
-                if (ray.startX == 7) {
-                    ray.startX = 9;
+                if (b_ray.startX == 7) {
+                    b_ray.startX = 9;
+                    b_ray.startY++;
                 }
-                if (ray.startY == 0) {
-                    ray.startY = 0;
+                if (b_ray.startY == 0) {
+                    b_ray.startY = 0;
                 }
-                if (ray.startY == 7) {
-                    ray.startY = 9;
+                if (b_ray.startY == 7) {
+                    b_ray.startY = 9;
+                    b_ray.startX++;
                 }
-                playground[ray.startX][ray.startY] = 3;
-                if (ray.finalX == 0) {
-                    ray.finalX = 0;
+                playground[b_ray.startX][b_ray.startY] = 3;
+                if (b_ray.finalX == 0) {
+                    b_ray.finalX = 0;
                 }
-                if (ray.finalX == 7) {
-                    ray.finalX = 9;
+                if (b_ray.finalX == 7) {
+                    b_ray.finalX = 9;
+                    b_ray.finalY++;
                 }
-                if (ray.finalY == 0) {
-                    ray.finalY = 0;
+                if (b_ray.finalY == 0) {
+                    b_ray.finalY = 0;
                 }
-                if (ray.finalY == 7) {
-                    ray.finalY = 9;
+                if (b_ray.finalY == 7) {
+                    b_ray.finalY = 9;
+                    b_ray.finalX++;
                 }
-                playground[ray.finalX][ray.finalY] = 4;
+                playground[b_ray.finalX][b_ray.finalY] = 4;
             });
             const atoms = getAtoms();
-            console.log(atoms);
             atoms.forEach(atom => {
                 playground[atom.x+ 1][atom.y +1 ] = 5;
             });
-            console.log(rays);
             return;
         }
 
