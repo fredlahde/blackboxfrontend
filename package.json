@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "backend": "file:../blackboxjs_backend/",
+    "blackboxjs_backend": "file:../blackboxjs_backend",
     "p5": "^0.7.2"
   }
 }

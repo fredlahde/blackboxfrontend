@@ -1,4 +1,5 @@
 import p5 from "p5"
+import {renderPlayground, revealBeam} from "blackboxjs_backend"
 
 const ARR_LEN = 10;
 const BOX_LEN = 100;
@@ -7,7 +8,8 @@ const CANVAS_LEN = 10 * BOX_LEN;
 const COLORS = {
     0: 0xff,
     1: '#aa0033',
-    2: '#bbaaff'
+    2: '#bbaaff',
+    3: '#00ff00'
 }
 
 function c2idx(c) {
@@ -35,7 +37,6 @@ function init_playground(p, playground, playground_edges) {
         playground[i][0] = 2;
         playground[i][9] = 2;
     }
-    console.table(playground);
     for (let x = 0; x < ARR_LEN; x++) {
         for (let y = 0; y < ARR_LEN; y++) {
             if (playground[x][y] == 2) {
@@ -43,7 +44,6 @@ function init_playground(p, playground, playground_edges) {
             }
         }
     }
-    console.table(playground_edges);
     p.draw();
 }
 
@@ -53,8 +53,11 @@ const sketch = function( p ) {
     let i = 0;
     let playground; 
     let playground_edges;
+    let atoms_left = 5;
+    let atoms_counter;
 
     p.setup = function() {
+        atoms_counter = document.querySelector('#pAtomsLeft');
         playground = new Array(ARR_LEN).fill(0).map(() => new Array(ARR_LEN).fill(0));
         playground_edges = new Array(ARR_LEN).fill(0).map(() => new Array(ARR_LEN).fill(0));
         p.createCanvas(CANVAS_LEN + 10, CANVAS_LEN + 10);
@@ -62,20 +65,45 @@ const sketch = function( p ) {
     };
 
     p.mouseReleased = function() {
-        const mx = c2idx(p.mouseX);
-        const my = c2idx(p.mouseY);
+        let mx = c2idx(p.mouseX);
+        let my = c2idx(p.mouseY);
+        // clicked on edge
         if (playground_edges[mx][my] == 1) {
-            console.log("light");
+            if (mx == 0) {
+                mx = 1;
+            }
+            if (mx == 9) {
+                mx = 7;
+            }
+            if (my == 0) {
+                my = 1;
+            }
+            if (my == 9) {
+                my = 7;
+            }
+            revealBeam(mx,my);
+            const rays = renderPlayground();
+            rays.forEach(ray => {
+                playground[ray.startX +2 ][ray.startY] = 3;
+            });
+            console.log(rays);
             return;
         }
+
         switch (playground[mx][my]) {
             case 0:
+                if (atoms_left == 0) {
+                    return;
+                }
+                atoms_left--;
                 playground[mx][my] = 1;
                 break;
             case 1:
                 playground[mx][my] = 0;
+                atoms_left++;
                 break;
         }
+        atoms_counter.innerHTML = atoms_left;
     }
 
     p.draw = function() {
@@ -87,4 +115,4 @@ const sketch = function( p ) {
     };
  };
 
-   const myp5 = new p5(sketch);
+const myp5 = new p5(sketch);
