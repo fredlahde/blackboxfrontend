@@ -111,26 +111,13 @@ const sketch = function( p ) {
                     b_ray.startX++;
                 }
                 playground[b_ray.startX][b_ray.startY] = 3;
-                if (b_ray.finalX == 0) {
-                    b_ray.finalX = 0;
-                }
-                if (b_ray.finalX == 7) {
-                    b_ray.finalX = 9;
-                    b_ray.finalY++;
-                }
-                if (b_ray.finalY == 0) {
-                    b_ray.finalY = 0;
-                }
-                if (b_ray.finalY == 7) {
-                    b_ray.finalY = 9;
-                    b_ray.finalX++;
-                }
-                playground[b_ray.finalX][b_ray.finalY] = 4;
+                console.log("final:", {x: b_ray.finalX, y: b_ray.finalY});
                 ray.path.forEach(point => {
                     let bpx = point.x;
                     let bpy = point.y;
                     playground[bpx +1][bpy+1] = 6;
                 });
+                playground[b_ray.finalX + 1][b_ray.finalY +1] = 4;
             });
             const atoms = getAtoms();
             atoms.forEach(atom => {
