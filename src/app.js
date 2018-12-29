@@ -11,7 +11,8 @@ const COLORS = {
     2: '#bbaaff',
     3: '#00ff00',
     4: '#0000ff',
-    5: '#f442d9'
+    5: '#f442d9',
+    6: '#ffe254'
 }
 
 function c2idx(c) {
@@ -125,6 +126,11 @@ const sketch = function( p ) {
                     b_ray.finalX++;
                 }
                 playground[b_ray.finalX][b_ray.finalY] = 4;
+                ray.path.forEach(point => {
+                    let bpx = point.x;
+                    let bpy = point.y;
+                    playground[bpx +1][bpy+1] = 6;
+                });
             });
             const atoms = getAtoms();
             atoms.forEach(atom => {
