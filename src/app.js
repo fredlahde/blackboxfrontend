@@ -28,7 +28,7 @@ function iterate_over_playground(p, playground, cb) {
     }
 }
 
-function init_playground(p, playground) {
+function init_playground(p, playground, playground_edges) {
     playground[0] = new Array(ARR_LEN).fill(2);
     playground[9] = new Array(ARR_LEN).fill(2);
     for (let i = 0; i < ARR_LEN; i++) {
@@ -36,6 +36,14 @@ function init_playground(p, playground) {
         playground[i][9] = 2;
     }
     console.table(playground);
+    for (let x = 0; x < ARR_LEN; x++) {
+        for (let y = 0; y < ARR_LEN; y++) {
+            if (playground[x][y] == 2) {
+                playground_edges[x][y] = 1;
+            }
+        }
+    }
+    console.table(playground_edges);
     p.draw();
 }
 
@@ -44,16 +52,22 @@ const sketch = function( p ) {
     const y = 100;
     let i = 0;
     let playground; 
+    let playground_edges;
 
     p.setup = function() {
         playground = new Array(ARR_LEN).fill(0).map(() => new Array(ARR_LEN).fill(0));
+        playground_edges = new Array(ARR_LEN).fill(0).map(() => new Array(ARR_LEN).fill(0));
         p.createCanvas(CANVAS_LEN + 10, CANVAS_LEN + 10);
-        init_playground(p, playground);
+        init_playground(p, playground, playground_edges);
     };
 
     p.mouseReleased = function() {
         const mx = c2idx(p.mouseX);
         const my = c2idx(p.mouseY);
+        if (playground_edges[mx][my] == 1) {
+            console.log("light");
+            return;
+        }
         switch (playground[mx][my]) {
             case 0:
                 playground[mx][my] = 1;
